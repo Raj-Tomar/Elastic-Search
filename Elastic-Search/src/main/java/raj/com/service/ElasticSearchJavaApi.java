@@ -4,8 +4,7 @@ import java.net.UnknownHostException;
 
 import org.springframework.http.ResponseEntity;
 
-public interface ElasticSearchService {
-
+public interface ElasticSearchJavaApi {
 	
 	/**
 	 * @return
@@ -48,4 +47,5 @@ public interface ElasticSearchService {
 	 * @return
 	 */
 	public ResponseEntity<String> mapping(String search);
+
 }

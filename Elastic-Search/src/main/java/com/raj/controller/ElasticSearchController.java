@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import raj.com.service.ElasticSearchJavaApi;
 import raj.com.service.ElasticSearchService;
 
 @RestController
@@ -15,6 +16,8 @@ public class ElasticSearchController {
 	
 	@Autowired
 	ElasticSearchService service;
+	@Autowired
+	ElasticSearchJavaApi esJavaApi;
 	
 	private final static Logger logger = Logger.getLogger(ElasticSearchController.class);
 
@@ -35,7 +38,8 @@ public class ElasticSearchController {
 		logger.info("createIndex controller");
 		ResponseEntity<String> result = null;
 		try {
-			result = service.createIndex(reqestBody);
+			//result = service.createIndex(reqestBody);
+			result = esJavaApi.createIndex(reqestBody);
 		} catch (Exception e) {
 			logger.error("Exception: "+e.getMessage());
 		}
@@ -47,7 +51,8 @@ public class ElasticSearchController {
 		logger.info("getById controller");
 		ResponseEntity<String> result = null;
 		try {
-			result = service.getById(reqestBody);
+			//result = service.getById(reqestBody);
+			result = esJavaApi.getById(reqestBody);
 		} catch (Exception e) {
 			logger.error("Exception: "+e.getMessage());
 		}
@@ -83,7 +88,8 @@ public class ElasticSearchController {
 		logger.info("filter controller");
 		ResponseEntity<String> result = null;
 		try {
-			result = service.filter(reqestBody);
+			// result = service.filter(reqestBody);
+			result = esJavaApi.filter(reqestBody);
 		} catch (Exception e) {
 			logger.error("Exception: "+e.getMessage());
 			e.printStackTrace();

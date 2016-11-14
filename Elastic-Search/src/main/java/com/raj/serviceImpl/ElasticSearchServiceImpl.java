@@ -1,17 +1,9 @@
 package com.raj.serviceImpl;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,9 +85,8 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
 		return response;
 	}
 	
-	@SuppressWarnings("resource")
 	@Override
-	public ResponseEntity<String> filter(String search) {
+	public ResponseEntity<String> filter(String search) throws UnknownHostException {
 		logger.info("filter");
 		ResponseEntity<String> response = null;
 		String url = ELASTIC_SEARCH_URL + "/_search";
@@ -106,28 +97,6 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
 			logger.info("\nFilter Query\n" + queryString);
 			JSONObject jObj = new JSONObject(queryString);
 			response = elasticSearchCall(url, HttpMethod.POST , jObj);
-			/*
-			Settings settings = Settings.builder()
-			        .put("cluster.name", "myClusterName").build();
-			TransportClient client = new PreBuiltTransportClient(settings);
-			*/
-			
-			// on startup
-			TransportClient client = null;
-			try {
-				client = new PreBuiltTransportClient(Settings.EMPTY)
-				        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9200));
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			}
-			
-			QueryBuilder qb = QueryBuilders.termQuery("movies", "movie");
-			SearchResponse res = client.prepareSearch("index")
-				    .setQuery(qb) // Query
-				    .execute().actionGet();
-			logger.info(res);
-			// on shutdown
-			client.close();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
