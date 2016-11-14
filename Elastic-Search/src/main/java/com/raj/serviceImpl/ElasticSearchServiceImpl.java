@@ -1,9 +1,15 @@
 package com.raj.serviceImpl;
 
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.elasticsearch.common.unit.DistanceUnit;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +88,28 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
 		//String url = ELASTIC_SEARCH_URL + "/movies/_search";
 		//String url = ELASTIC_SEARCH_URL + "/movies/movie/_search";
 		ResponseEntity<String> response = elasticSearchCall(url, HttpMethod.POST , null);
+		
+		
+		Map<String,Float> fields = new HashMap<String,Float>();
+		fields.put("iin", 100f);
+		fields.put("desc", 100f);
+		
+		QueryBuilder qb = QueryBuilders.queryStringQuery("*Product1*")
+				.fields(fields)
+				.analyzeWildcard(true);
+		
+		QueryBuilder gdq = QueryBuilders.geoDistanceQuery("geo_locations")  
+			    .point(16.5062, 80.6480)
+			    .distance(200, DistanceUnit.KILOMETERS);
+		
+		BoolQueryBuilder boolQuery = QueryBuilders.boolQuery()
+				.must(qb)
+				.must(gdq)
+				.filter(QueryBuilders.termsQuery("item_status", "true"));
+		 
+		
+		logger.info("\n Query \n" + boolQuery);
+		
 		return response;
 	}
 	
@@ -138,5 +166,5 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
 		}
 		return response;
 	}
-
+	
 }
