@@ -1,9 +1,17 @@
 package com.raj.serviceImpl;
 
-import java.text.MessageFormat;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +93,7 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
 		return response;
 	}
 	
+	@SuppressWarnings("resource")
 	@Override
 	public ResponseEntity<String> filter(String search) {
 		logger.info("filter");
@@ -92,14 +101,33 @@ public class ElasticSearchServiceImpl implements ElasticSearchService{
 		String url = ELASTIC_SEARCH_URL + "/_search";
 		search = "ford";
 		try {
-			String queryString = MessageFormat.format(query.getProperty("fieldSearch").trim(), search);
-			//String queryString = query.getProperty("fieldSearch").trim();
+			//String queryString = MessageFormat.format(query.getProperty("fieldSearch").trim(), search);
+			String queryString = query.getProperty("fieldSearch").trim();
 			logger.info("\nFilter Query\n" + queryString);
 			JSONObject jObj = new JSONObject(queryString);
 			response = elasticSearchCall(url, HttpMethod.POST , jObj);
+			/*
+			Settings settings = Settings.builder()
+			        .put("cluster.name", "myClusterName").build();
+			TransportClient client = new PreBuiltTransportClient(settings);
+			*/
 			
-			//QueryBuilder qb = QueryBuilders.termQuery("name", "some string");
+			// on startup
+			TransportClient client = null;
+			try {
+				client = new PreBuiltTransportClient(Settings.EMPTY)
+				        .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9200));
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
 			
+			QueryBuilder qb = QueryBuilders.termQuery("movies", "movie");
+			SearchResponse res = client.prepareSearch("index")
+				    .setQuery(qb) // Query
+				    .execute().actionGet();
+			logger.info(res);
+			// on shutdown
+			client.close();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
