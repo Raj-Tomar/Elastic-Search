@@ -27,13 +27,13 @@ public interface ElasticSearchJavaApi {
 	 * @param search
 	 * @return
 	 */
-	public ResponseEntity<String> deleteDocument(String search);
+	public ResponseEntity<String> search(String search);
 	
 	/**
 	 * @param search
 	 * @return
 	 */
-	public ResponseEntity<String> search(String search);
+	public ResponseEntity<String> updateDocument(String search);
 	
 	/**
 	 * @param search
@@ -47,5 +47,10 @@ public interface ElasticSearchJavaApi {
 	 * @return
 	 */
 	public ResponseEntity<String> mapping(String search);
-
+	
+	/**
+	 * @param search
+	 * @return
+	 */
+	public ResponseEntity<String> deleteDocument(String search);
 }

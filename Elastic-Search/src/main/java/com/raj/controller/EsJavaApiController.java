@@ -1,23 +1,25 @@
 package com.raj.controller;
 
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import raj.com.service.ElasticSearchService;
+import raj.com.service.ElasticSearchJavaApi;
 
-@RestController
-public class ElasticSearchController {
+@Controller
+@RequestMapping(value = "/api")
+public class EsJavaApiController {
 	
 	@Autowired
-	ElasticSearchService service;
+	ElasticSearchJavaApi service;
 	
-	private final static Logger logger = Logger.getLogger(ElasticSearchController.class);
-
+	private final static Logger logger = Logger.getLogger(EsJavaApiController.class);
+	
+	
 	@PostMapping(value = "/estest", consumes = "application/json", produces = "applicatin/json")
 	public ResponseEntity<String> testES(@RequestBody String reqestBody){
 		logger.info("testES controller");
@@ -97,6 +99,19 @@ public class ElasticSearchController {
 		ResponseEntity<String> result = null;
 		try {
 			result = service.mapping(reqestBody);
+		} catch (Exception e) {
+			logger.error("Exception: "+e.getMessage());
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	@PostMapping(value = "/delete", consumes = "application/json", produces = "applicatin/json")
+	public ResponseEntity<String> delete(@RequestBody String reqestBody){
+		logger.info("delete controller");
+		ResponseEntity<String> result = null;
+		try {
+			result = service.deleteDocument(reqestBody);
 		} catch (Exception e) {
 			logger.error("Exception: "+e.getMessage());
 			e.printStackTrace();
