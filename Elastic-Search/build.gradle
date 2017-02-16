@@ -17,11 +17,12 @@ dependencies {
     compile group: 'org.elasticsearch.client', name: 'transport', version: '5.0.0'
     compile group: 'net.spy', name: 'spymemcached', version: '2.12.1'
 }
-
+/*
 gretty {
   port = 8181
   contextPath = 'elasticsearch'
 }
+*/
 
 //For Eclipse IDE only
 eclipse {
