@@ -36,7 +36,7 @@ public class MemcachedConnection {
 	         // Shutdowns the memcached client
 	         //mcc.shutdown();
 	      } catch(Exception ex){
-	    	  logger.info( ex.getMessage() );
+	    	  logger.error( ex.getMessage() );
 	    	  ex.printStackTrace();
 	      } 
 	   return mcc;
