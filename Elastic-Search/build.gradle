@@ -1,20 +1,41 @@
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'eclipse-wtp'
-apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
+//apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
 
 repositories {
+	 jcenter()
      mavenCentral()
 }
 
 dependencies {
+	// Loggers
     compile group: 'log4j', name: 'log4j', version: '1.2.14'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
-    compile 'org.springframework:spring-webmvc:4.3.3.RELEASE'
+    
+    // Spring MVC
+    compile group: 'org.springframework', name: 'spring-webmvc', version: '4.3.3.RELEASE'
+    
+    // Spring JDBC
+    compile group: 'org.springframework', name: 'spring-tx', version: '4.3.3.RELEASE'
+    compile group: 'org.springframework', name: 'spring-jdbc', version: '4.3.3.RELEASE'
+    compile group: 'org.springframework', name: 'spring-orm', version: '4.3.3.RELEASE'
+    
+    // Hibernate
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.3.Final'
+    
+    // MySQL Connector
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
+	
+    // Json
     compile group: 'org.json', name: 'org.json', version: '2.0'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
+    
+    // Elastic Search
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '5.0.0'
     compile group: 'org.elasticsearch.client', name: 'transport', version: '5.0.0'
+    
+    // Memcached
     compile group: 'net.spy', name: 'spymemcached', version: '2.12.1'
 }
 /*
